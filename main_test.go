@@ -1,75 +1,71 @@
-
 package main
 
 import (
+	
+	"io"
 	"os"
-	"fmt"
-	"testing" 
 	"strings"
+	"testing"
 )
 
-func TestPrepend(t *testing.T) { 
-	 
-	var mylist = linkedList{} 
-	var node1 = &node{data:48}
+func TestPrepend(t *testing.T) {
 
-	mylist.prePend(node1) 
+	var mylist = linkedList{}
+	var node1 = &node{data: 48}
 
-	if mylist.head != node1 { 
+	mylist.Prepend(node1)
+
+	if mylist.head != node1 {
 		t.Errorf("Prepend failed: expected head to be node1, got %+v", mylist.head)
 	}
 }
 
-func TestDeleteWithValue(t *testing.T) { 
-	var mylist  = linkedList{}  
-	var node1  = &node{data:48} 
-	var node2 = &node{data:18}
+func TestDeleteWithValue(t *testing.T) {
+	var mylist = linkedList{}
+	var node1 = &node{data: 48}
+	var node2 = &node{data: 18}
 
-	mylist.prePend(node1) 
-	mylist.prePend(node2) 
+	mylist.Prepend(node1)
+	mylist.Prepend(node2)
 
-	mylist.deleteWithValue(18) 
-	if mylist.head.data == 18 { 
-		t.Errorf("DeleteWithValue failed - value 18 was not deleted rom the list")  
+	mylist.DeleteWithValue(18)
+	if mylist.head.data == 18 {
+		t.Errorf("DeleteWithValue failed - value 18 was not deleted from the list")
 
 	}
 }
 
-func TestPrintListData(t *testing.T) { 
-	var mylist = linkedList{} 
-	var node1 = &node{data:48}
-	var node2 = &node{data:18} 
+func TestPrintListData(t *testing.T) {
+	var mylist = linkedList{}
+	var node1 = &node{data: 48}
+	var node2 = &node{data: 18}
 
-	mylist.prePend(node1) 
-	mylist.prePend(node2) 
+	mylist.Prepend(node1)
+	mylist.Prepend(node2) 
 
-	writer  := new(strings.Builder) 
-	oldStdout  := os.Stdout 
-	
-	fmt.Fprintln(writer, "18 48") 
+  // Temporarily re-direct os.Stdout to a pipe . 
+	oldStdout := os.Stdout
+	r,w , _ := os.Pipe()
+	os.Stdout = w
 
-
-	os.Stdout = oldStdout
-
-
-
-	var expectedOutput = "18 48"  
-	var actualOutput = writer.String() 
-	actualOutput = strings.TrimSuffix(actualOutput, "\n") 
-	if actualOutput !=expectedOutput { 
-		t.Errorf("PrintListData failed: expectedOutput '%s', but got '%s' ", expectedOutput, actualOutput)  
-	}
+	// Calling 'PrintListData' which should now write to our pipe . 
+	mylist.PrintListData()
 
 
+// Closing the write-end of the pipe, read the output, and restore os.Stdout . 
+w.Close()
+os.Stdout = oldStdout
+capturedOutput, _ := io.ReadAll(r)
+r.Close()
+
+// Converting captured output to a string and trim any trailing newlines . 
+actualOutput := strings.TrimSuffix(string(capturedOutput), "\n") 
+
+// Defining the expected output . 
+expectedOuput := "18 48 " 
+
+// Comparing the actual output to the expected output . 
+if actualOutput != expectedOuput { 
+	t.Errorf("PrintListData failed: expected output '%s', but got '%s'", expectedOuput, actualOutput)
 }
-
-
-// Run all the tests . 
-func TestMain(m *testing.M) { 
-	// Run tests 
-	var result = m.Run()  
-
-	// Exit with the result .  
-	os.Exit(result) 
-
 }

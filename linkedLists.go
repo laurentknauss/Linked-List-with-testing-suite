@@ -1,10 +1,13 @@
 /* 
-The following codebase defones 2 functions. 
-The `prepend` function addsa node to the front of the linked list. 
-The `deleteWithValue` function deletes a node witha given value from the linked list. 
- he  `main` function creates a linked list and then calls the `prepend()` and `deleteWithValue()` functions to add and remove 
- nodes from the Linked List . 
+The following codebase defines 2 functions. 
+The `prepend` function adds a node to the front of the linked list. 
+The `deleteWithValue` function deletes a node with a given value from the linked list. 
+The  `main` function creates a linked list and then calls the `prepend()` and `deleteWithValue()` functions
+to add and remove nodes from the Linked List . 
+
 */
+
+
 package main 
 
 import (
@@ -18,35 +21,45 @@ type node  struct {
 	next *node  // this is a pointer to the  address of the next node . 
 }
 
-//§ second, we need to describe the list 
+// second, we need to describe the list 
 type linkedList struct { 
 	head *node
 	length int // this is indicating how long the linked list is .
 }
 
+
+// The 'string' function provides a string representation of the linked list.
+func (l linkedList) String() string { 
+	return fmt.Sprintf("Length: %d, Head: %v", l.length, l.head) 
+}
+
+
 // The `prepend' function to put the  node inside the linked list. 
 // The receiver is going to be `prepend` . The receiver (*linkedList) is a pointer receiver this time .
-func(l *linkedList ) prePend(n *node)  { // this is going to take a node to be added at the front. 
+
+// This is going to take a node to be added at the front. 
+func(l *linkedList ) Prepend(n *node)  { 
    second := l.head
 	 l.head = n 
 	 l.head.next = second
 	 l.length++
 }
 
-// The receiver (linkList) is now a value receiver this time.
-func (l linkedList) printListData() { 
-		var toPrint = l.head
+// The 'printListData' function  prints the data of all nodes in the linked list.
+func (l linkedList) PrintListData() { 
+	toPrint := l.head
 	for l.length != 0 { 
-		// inside the loop, let's print out he first node . 
+		// Inside the loop, let's print out he first node . 
 		fmt.Printf("%d ", toPrint.data)
-		toPrint = toPrint.next // we keep updating `toPrint` to the next  , this is how we update the loop . 
+		// We keep updating `toPrint` to the next  , this is how we update the loop .
+		toPrint = toPrint.next 
 		l.length--
 	}
 	fmt.Printf("\n")
 }
 
-// We are now creating a function that can delete with a given value 
-func (l *linkedList) deleteWithValue(value int) {  
+// The 'DeleteWithValue' function removes the node with a given value . 
+func (l *linkedList) DeleteWithValue(value int) {  
 	if l.length == 0 { // if the length of the list is zero 
 		return 
 	}
@@ -71,38 +84,33 @@ func (l *linkedList) deleteWithValue(value int) {
 
 func main() { 
 	mylist := linkedList{} 
-	node1 := &node{data:48} // creating some nodes  . 
+	// creating some nodes . 
+	node1 := &node{data:48} 
 	node2 := &node{data:18}  
 	node3 := &node{data:16} 
 	node4 := &node{data:11}
 	node5 := &node{data:7} 
 	node6 := &node{data:2} 
 	
-	mylist.prePend(node1)
-	mylist.prePend(node2)
-	mylist.prePend(node3)
-	mylist.prePend(node4) 
-	mylist.prePend(node5)
-	mylist.prePend(node6)
+	mylist.Prepend(node1)
+	mylist.Prepend(node2)
+	mylist.Prepend(node3)
+	mylist.Prepend(node4) 
+	mylist.Prepend(node5)
+	mylist.Prepend(node6)
 	
+fmt.Println("Before Deletion : ")
+mylist.PrintListData()
+fmt.Println()
 
-	/*
-	mylist.prepend(node7)
-	mylist.prepend(node8)
-  mylist.prepend(node9)
-  mylist.prepend(node10)
-  */ 
+mylist.DeleteWithValue(100) 
+mylist.DeleteWithValue(2)
 
-	mylist.printListData()
-
-
-mylist.deleteWithValue(100) 
-mylist.deleteWithValue(2)
-
-mylist.printListData()
-emptyList := linkedList{} // to handle the case when there is an empty list . 
-emptyList.deleteWithValue(10)
+fmt.Println("After Deletion : ") 
+mylist.PrintListData()
 
 
-fmt.Println("The first value printed out  is the address of the last node  and the second value printed out is the length of mylist :  " , mylist)  
+fmt.Println("Linked List Details : ", mylist) 
+
+
 }
